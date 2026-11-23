@@ -1,9 +1,48 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
+
+/**
+ * Share previews (Open Graph / X cards) need the image's full web address. Set VITE_SITE_URL
+ * when building for a live site; without it the tags fall back to a relative path.
+ */
+/** Canonical address and structured data, only when the live address is known. */
+function seoTags(site: string): string {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    name: "Night Visitors",
+    description:
+      "Show and tell is in the morning. Fly a little saucer over a farm, a town and a city and beam up what you can before sunrise. A free browser game, no sign-up.",
+    applicationCategory: "GameApplication",
+    gamePlatform: "Web browser",
+    operatingSystem: "Any (runs in a web browser)",
+    browserRequirements: "Requires JavaScript",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    author: { "@type": "Person", name: "Jay Fox", url: "https://jayfox.design" },
+    isPartOf: { "@type": "CollectionPage", name: "Lab", url: "https://jayfox.design/lab" },
+    license: "https://opensource.org/licenses/MIT",
+  };
+  return [
+    `<link rel="canonical" href="${site}/" />`,
+    `<script type="application/ld+json">${JSON.stringify({ ...schema, url: `${site}/`, image: `${site}/og-image.png` })}</script>`,
+  ].join("\n    ");
+}
+
+function shareTags(): Plugin {
+  const site = process.env.VITE_SITE_URL?.replace(/\/+$/, "");
+  return {
+    name: "share-tags",
+    transformIndexHtml: (html) =>
+      html
+        .replaceAll("%SHARE_IMAGE%", site ? `${site}/og-image.png` : "./og-image.png")
+        .replace("%SHARE_URL_TAG%", site ? `<meta property="og:url" content="${site}/" />` : "")
+        .replace("%SEO_TAGS%", site ? seoTags(site) : ""),
+  };
+}
 
 // Plain Vite config so any host (Bolt, StackBlitz, Netlify, a laptop) can start it as is.
 export default defineConfig({
   // Relative base so the build works at /, /night-visitors/, /lab/night-visitors/ or anywhere.
   base: "./",
-  plugins: [react()],
+  plugins: [react(), shareTags()],
 });

@@ -109,6 +109,11 @@ in front and dim at the back, so the saucer reads as round, not flat.
 - **Things that are still too heavy carry a lock**, and anything new carries a "New!" tag:
   state shown by shape and text, not color alone.
 
+- **Share tags for the Lab (2026-11-23, build default).** A 1200x630 share image (the title
+  screen over the farm) plus Open Graph / X tags; building with `VITE_SITE_URL` adds the
+  canonical address and VideoGame structured data. No GitHub link in the data while the repo is
+  private.
+
 ## Left out on purpose
 
 - Accounts and online scores: the best night is kept in the browser only.
