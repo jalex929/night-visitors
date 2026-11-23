@@ -78,6 +78,13 @@ as note lists and synthesized in the browser, so there are no audio files to lic
 pentatonic tune for the farm, slow lo-fi chords for town, and a walking bass with soft hi-hats for
 the city. They're kept well under the sound effects and follow the Sound button (off by default).
 
+**The hatch sits under the saucer, in perspective** (Jay's call). The opening had overlapped the
+rim lights. Now a shallow bowl hangs below the disc, the hatch is a flat oval at its lowest point
+(squashed to the same angle as the disc), and the beam comes out of it.
+
+**The class never says the same thing twice in a run** (Jay's call). Each score range has three
+reactions, one per night, so the farm, town and city mornings never repeat a line.
+
 **Saucer lights follow the rim** (Jay's call). They travel around the disc, bigger and brighter
 in front and dim at the back, so the saucer reads as round, not flat.
 

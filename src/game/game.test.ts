@@ -269,4 +269,11 @@ describe("the morning", () => {
     expect(classReaction(0)).not.toBe(classReaction(50));
     expect(classReaction(50)).not.toBe(classReaction(2000));
   });
+
+  it("never repeats a reaction across the three nights of a run", () => {
+    for (const score of [0, 50, 200, 450, 800, 5000]) {
+      const lines = [1, 2, 3].map((night) => classReaction(score, night));
+      expect(new Set(lines).size).toBe(3);
+    }
+  });
 });

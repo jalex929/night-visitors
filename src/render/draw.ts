@@ -1278,7 +1278,8 @@ function rimLights(ctx: CanvasRenderingContext2D, view: View, front: boolean) {
     const depth = Math.sin(a); // 1 = nearest the viewer, -1 = far side
     if (front !== depth >= 0) continue;
     const x = Math.cos(a) * 47;
-    const y = 2 + depth * 8;
+    // Lights ride the rim band of the disc, above the underside and the hatch.
+    const y = 1.5 + depth * 6.5;
     const r = 1.4 + 1.6 * (depth + 1) * 0.6;
     const blink = view.reducedMotion ? 1 : 0.65 + 0.35 * Math.sin(view.clock * 5 + i * 1.7);
     ctx.globalAlpha = front ? blink : 0.35 + 0.25 * (depth + 1);
@@ -1286,8 +1287,8 @@ function rimLights(ctx: CanvasRenderingContext2D, view: View, front: boolean) {
     ellipse(ctx, x, y, r * 1.15, r * 0.8);
     ctx.fill();
     if (front && depth > 0.5) {
-      ctx.globalAlpha = 0.25 * blink;
-      ellipse(ctx, x, y, r * 2.6, r * 1.8);
+      ctx.globalAlpha = 0.16 * blink;
+      ellipse(ctx, x, y, r * 1.8, r * 1.2);
       ctx.fill();
     }
   }
@@ -1300,9 +1301,14 @@ function drawSaucer(ctx: CanvasRenderingContext2D, state: GameState, view: View)
   ctx.save();
   ctx.translate(state.saucerX, SAUCER_Y + bob);
   ctx.rotate(tilt);
-  // Underside and rim give the disc some thickness.
-  ctx.fillStyle = "#5d5a80";
-  ellipse(ctx, 0, 6, 52, 11);
+  // Underside: a shallow bowl hanging below the disc, narrower than the rim, so the saucer
+  // reads as round and seen from slightly below.
+  const bowl = ctx.createLinearGradient(0, 4, 0, 20);
+  bowl.addColorStop(0, "#6b6890");
+  bowl.addColorStop(1, "#4a4770");
+  ctx.fillStyle = bowl;
+  ctx.beginPath();
+  ctx.ellipse(0, 5, 38, 15, 0, 0, Math.PI);
   ctx.fill();
   const disc = ctx.createLinearGradient(0, -10, 0, 10);
   disc.addColorStop(0, "#f0eef9");
@@ -1346,11 +1352,18 @@ function drawSaucer(ctx: CanvasRenderingContext2D, state: GameState, view: View)
   ctx.fillStyle = "rgba(120,170,200,0.5)";
   ellipse(ctx, 0, -4, 22, 4);
   ctx.fill();
-  // Hatch underneath glows while beaming.
-  ctx.fillStyle = state.beamOn ? "#c8fff0" : "#4d6a78";
-  ellipse(ctx, 0, 13, 13, 3.5);
-  ctx.fill();
+  // Rim lights sit on the disc; the hatch sits lower, at the bottom of the bowl.
   rimLights(ctx, view, true);
+  // Hatch: a flat oval at the lowest point of the bowl, squashed to the same angle as the disc
+  // (height about a fifth of its width). Glows while beaming.
+  ctx.fillStyle = state.beamOn ? "#c8fff0" : "#3d4f62";
+  ellipse(ctx, 0, 17.5, 12, 2.4);
+  ctx.fill();
+  if (state.beamOn) {
+    ctx.fillStyle = "rgba(200,255,240,0.35)";
+    ellipse(ctx, 0, 17.5, 17, 4);
+    ctx.fill();
+  }
   ctx.restore();
 }
 

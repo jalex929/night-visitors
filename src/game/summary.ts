@@ -29,11 +29,62 @@ export function haulSentence(collected: Record<Kind, number>): string {
   return `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`;
 }
 
-export function classReaction(score: number): string {
-  if (score === 0) return "You told a very long story about the moon instead.";
-  if (score < 100) return "A solid start. The class wants to see more.";
-  if (score < 300) return "The whole class leaned in.";
-  if (score < 600) return "The teacher asked if they could keep one.";
-  if (score < 1000) return "Best show and tell in years.";
-  return "Nobody will ever top this. Ever.";
+/**
+ * How the class takes it, by score. Each range has one line per night, so the farm, town and
+ * city mornings never repeat a line within a run.
+ */
+const REACTIONS: { below: number; lines: [string, string, string] }[] = [
+  {
+    below: 1,
+    lines: [
+      "You told a very long story about the moon instead.",
+      "You showed everyone a nice rock you found. It went fine.",
+      "You described the city lights in great detail. Someone clapped.",
+    ],
+  },
+  {
+    below: 100,
+    lines: [
+      "A solid start. The class wants to see more.",
+      "A few kids asked good questions.",
+      'Your teacher wrote "promising" on a sticky note.',
+    ],
+  },
+  {
+    below: 300,
+    lines: [
+      "The whole class leaned in.",
+      'Someone in the back said "whoa" out loud.',
+      "Even the class hamster looked impressed.",
+    ],
+  },
+  {
+    below: 600,
+    lines: [
+      "The teacher asked if they could keep one.",
+      "Recess got pushed back so everyone could look closer.",
+      "The principal came by to see what the fuss was about.",
+    ],
+  },
+  {
+    below: 1000,
+    lines: [
+      "Best show and tell in years.",
+      "The class gave you a standing ovation.",
+      "They're putting your photo on the hallway wall.",
+    ],
+  },
+  {
+    below: Infinity,
+    lines: [
+      "Nobody will ever top this. Ever.",
+      "The whole school wants a turn next week.",
+      "The local news wants an interview.",
+    ],
+  },
+];
+
+export function classReaction(score: number, night = 1): string {
+  const band = REACTIONS.find((r) => score < r.below) ?? REACTIONS[REACTIONS.length - 1]!;
+  return band.lines[(Math.max(1, night) - 1) % band.lines.length]!;
 }

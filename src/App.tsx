@@ -226,7 +226,7 @@ export function App() {
               {screen.result.score} <span>points</span>
               {screen.best && <span className="badge">New best</span>}
             </p>
-            <p className="reaction">{classReaction(screen.result.score)}</p>
+            <p className="reaction">{classReaction(screen.result.score, screen.result.night)}</p>
           </div>
 
           <div className="haul-block">
