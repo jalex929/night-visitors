@@ -91,6 +91,8 @@ are lowest since its night is only 30 seconds. They live in `src/game/summary.ts
 **Saucer lights follow the rim** (Jay's call). They travel around the disc, bigger and brighter
 in front and dim at the back, so the saucer reads as round, not flat.
 
+**Public repo (2026-11-23, Jay's call).** The code is public so the Lab page can link to it, and the share data now names the repo (`sameAs`). Before going public the history was checked for secrets and personal details; commits use the GitHub no-reply address.
+
 ## Build defaults
 
 - **Plain-data game state and a `step` function**, with seeded randomness, so the rules are unit

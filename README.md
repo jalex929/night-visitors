@@ -6,6 +6,9 @@ A small browser game. You're a young visitor out after dark with a tractor-beam 
 collecting things for class before the sun comes up. The beam lifts one thing at a time:
 bigger things are worth more but take longer to lift, and everything else runs while you wait.
 
+Play it at [jayfox.design/lab/night-visitors](https://jayfox.design/lab/night-visitors/). Why it's
+built the way it is, and who decided what: [DECISIONS.md](DECISIONS.md).
+
 ## What it does
 
 - **Three nights, one after another:** the farm, then town, then the city. After the city the

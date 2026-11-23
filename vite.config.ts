@@ -20,6 +20,7 @@ function seoTags(site: string): string {
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     author: { "@type": "Person", name: "Jay Fox", url: "https://jayfox.design" },
     isPartOf: { "@type": "CollectionPage", name: "Lab", url: "https://jayfox.design/lab" },
+    sameAs: "https://github.com/jalex929/night-visitors",
     license: "https://opensource.org/licenses/MIT",
   };
   return [
