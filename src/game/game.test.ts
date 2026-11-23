@@ -272,13 +272,20 @@ describe("the morning", () => {
 
   it("every place has its own thresholds and lines, and no line repeats", () => {
     expect(new Set(ALL_REACTIONS).size).toBe(ALL_REACTIONS.length);
-    expect(ALL_REACTIONS.length).toBeGreaterThanOrEqual(18);
-    for (const score of [0, 40, 130, 260, 420, 900]) {
+    expect(ALL_REACTIONS.length).toBeGreaterThanOrEqual(36);
+    for (const score of [0, 40, 130, 260, 420, 900, 2000, 3500, 6000]) {
       const lines = (["farm", "town", "city"] as const).map((p) => classReaction(score, p));
       expect(new Set(lines).size).toBe(3);
     }
+    // Big scores still get varied lines (players score in the thousands).
+    for (const place of ["farm", "town", "city"] as const) {
+      const high = [1000, 2000, 3000, 4000, 5000].map((n) => classReaction(n, place));
+      expect(new Set(high).size).toBeGreaterThanOrEqual(4);
+    }
     // The city's shorter night reaches its top line sooner than the farm's.
-    expect(classReaction(450, "city")).toBe("The local news wants an interview.");
-    expect(classReaction(450, "farm")).toBe("Best show and tell in years.");
+    expect(classReaction(4000, "city")).toBe(
+      "Show and tell has been retired. Nobody can follow that.",
+    );
+    expect(classReaction(4000, "farm")).toBe("The farm wants its things back. Everyone said no.");
   });
 });
