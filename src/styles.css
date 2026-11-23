@@ -1,0 +1,498 @@
+:root {
+  --night: #070922;
+  --night-2: #12153d;
+  --panel: rgba(9, 11, 38, 0.82);
+  --line: rgba(220, 226, 255, 0.18);
+  --ink: #eef0ff;
+  --ink-soft: #b8bce0;
+  --beam: #9ff5d6;
+  --beam-ink: #06261d;
+  --warm: #ffd98a;
+  --focus: #ffe08a;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--night);
+  color: var(--ink);
+  font-family: Sora, system-ui, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+a {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  padding: 0.7rem 1.3rem;
+  font-weight: 600;
+  min-height: 44px;
+}
+
+button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+button.primary {
+  background: var(--beam);
+  color: var(--beam-ink);
+  border-color: transparent;
+}
+
+button.primary:hover {
+  background: #c2fbe7;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+kbd {
+  font-family: inherit;
+  font-size: 0.85em;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  padding: 0 0.4em;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Menus: title and morning */
+
+.app-menu {
+  position: relative;
+  min-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem clamp(1rem, 4vw, 3rem);
+}
+
+.back {
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.5rem 0;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+.icon-button {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+  min-height: 40px;
+}
+
+.icon-button[aria-pressed="true"]::before {
+  content: "♪ ";
+}
+
+.panel {
+  position: relative;
+  z-index: 1;
+  width: min(36rem, calc(100% - 2rem));
+  margin: clamp(0.5rem, 5vh, 4rem) clamp(1rem, 4vw, 3rem) 2rem;
+  padding: clamp(1.25rem, 4vw, 2.25rem);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  backdrop-filter: blur(6px);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--beam);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0.2rem 0 0;
+  font-size: clamp(2.4rem, 8vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+
+h1:focus {
+  outline: none;
+}
+
+.tagline {
+  margin: 0.4rem 0 1rem;
+  font-size: 1.2rem;
+  color: var(--warm);
+}
+
+.lede {
+  margin: 0 0 1rem;
+  color: var(--ink-soft);
+}
+
+.lede strong {
+  color: var(--ink);
+}
+
+.how {
+  margin: 0 0 1.4rem;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+}
+
+.how li {
+  padding-left: 1rem;
+  border-left: 2px solid var(--beam);
+}
+
+.how strong {
+  color: var(--ink);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.best {
+  margin: 1rem 0 0;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.score {
+  margin: 0;
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.score span {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.score .badge {
+  font-size: 0.8rem;
+  color: var(--beam-ink);
+  background: var(--warm);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+}
+
+.reaction {
+  margin: 0.5rem 0 1rem;
+  color: var(--warm);
+  font-size: 1.1rem;
+}
+
+.haul {
+  margin: 0 0 1.4rem;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.haul li {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+/* The night */
+
+.app-night {
+  height: 100%;
+}
+
+.game {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: max(0.5rem, env(safe-area-inset-top)) clamp(0.5rem, 2vw, 1.5rem)
+    max(0.5rem, env(safe-area-inset-bottom));
+  gap: 0.5rem;
+}
+
+.hud {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.hud-item {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.hud-label {
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.hud-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.hud-strength {
+  min-width: 9rem;
+}
+
+.meter {
+  display: block;
+  height: 10px;
+  margin-top: 0.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.meter-fill {
+  display: block;
+  height: 100%;
+  background: var(--beam);
+  transition: width 0.3s ease;
+}
+
+.sun {
+  --dawn: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--warm);
+  background: linear-gradient(
+    to top,
+    var(--warm) calc(var(--dawn) * 100%),
+    transparent calc(var(--dawn) * 100%)
+  );
+}
+
+.hud-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.canvas {
+  display: block;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: crosshair;
+}
+
+.toast {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  margin: 0;
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  font-weight: 600;
+  max-width: calc(100% - 2rem);
+  animation: toast-in 0.25s ease-out;
+}
+
+.toast-pop {
+  background: var(--beam);
+  color: var(--beam-ink);
+  border-color: transparent;
+  font-size: 1.05rem;
+  animation: toast-pop 0.55s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+
+@keyframes toast-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) translateY(10px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 1rem;
+  background: rgba(5, 6, 24, 0.55);
+  border-radius: 14px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1.5rem;
+  width: min(24rem, 100%);
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.card p {
+  color: var(--ink-soft);
+  margin: 0.3rem 0 1.2rem;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.beam-button {
+  display: none;
+  background: var(--beam);
+  color: var(--beam-ink);
+  border: none;
+  min-height: 64px;
+  min-width: 9rem;
+  font-size: 1.05rem;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.beam-button:active {
+  background: #d8fff2;
+}
+
+/* Touch screens: a big Beam button instead of the keyboard hint. */
+@media (pointer: coarse) {
+  .beam-button {
+    display: block;
+    margin-left: auto;
+  }
+  .hint {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .hud {
+    gap: 0.4rem 1rem;
+  }
+  .hud-value {
+    font-size: 1.1rem;
+  }
+  .hud-strength {
+    min-width: 7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast,
+  .toast-pop {
+    animation: none;
+  }
+  .meter-fill {
+    transition: none;
+  }
+}
