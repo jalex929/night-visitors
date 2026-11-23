@@ -1,5 +1,5 @@
 /** Words for the morning: what you brought to show and tell, and how the class took it. */
-import { KIND_ORDER, KINDS, type Kind } from "./config";
+import { KIND_ORDER, KINDS, type Kind, type LocationId } from "./config";
 
 export interface HaulLine {
   kind: Kind;
@@ -30,61 +30,43 @@ export function haulSentence(collected: Record<Kind, number>): string {
 }
 
 /**
- * How the class takes it, by score. Each range has one line per night, so the farm, town and
- * city mornings never repeat a line within a run.
+ * How the class takes it. Each place has its own score thresholds (nights get shorter and the
+ * things to catch change) and its own lines, so no two mornings in a run read the same.
+ * `below` is exclusive: a score lands in the first range it's under. Tune the numbers here.
  */
-const REACTIONS: { below: number; lines: [string, string, string] }[] = [
-  {
-    below: 1,
-    lines: [
-      "You told a very long story about the moon instead.",
-      "You showed everyone a nice rock you found. It went fine.",
-      "You described the city lights in great detail. Someone clapped.",
-    ],
-  },
-  {
-    below: 100,
-    lines: [
-      "A solid start. The class wants to see more.",
-      "A few kids asked good questions.",
-      'Your teacher wrote "promising" on a sticky note.',
-    ],
-  },
-  {
-    below: 300,
-    lines: [
-      "The whole class leaned in.",
-      'Someone in the back said "whoa" out loud.',
-      "Even the class hamster looked impressed.",
-    ],
-  },
-  {
-    below: 600,
-    lines: [
-      "The teacher asked if they could keep one.",
-      "Recess got pushed back so everyone could look closer.",
-      "The principal came by to see what the fuss was about.",
-    ],
-  },
-  {
-    below: 1000,
-    lines: [
-      "Best show and tell in years.",
-      "The class gave you a standing ovation.",
-      "They're putting your photo on the hallway wall.",
-    ],
-  },
-  {
-    below: Infinity,
-    lines: [
-      "Nobody will ever top this. Ever.",
-      "The whole school wants a turn next week.",
-      "The local news wants an interview.",
-    ],
-  },
-];
+const REACTIONS: Record<LocationId, { below: number; line: string }[]> = {
+  farm: [
+    { below: 1, line: "You told a very long story about the moon instead." },
+    { below: 60, line: "A solid start. The class wants to see more." },
+    { below: 150, line: "The whole class leaned in." },
+    { below: 300, line: "The teacher asked if they could keep a chicken." },
+    { below: 500, line: "Best show and tell in years." },
+    { below: Infinity, line: "Nobody will ever top this. Ever." },
+  ],
+  town: [
+    { below: 1, line: "You showed everyone a nice rock you found. It went fine." },
+    { below: 60, line: "A few kids asked good questions." },
+    { below: 150, line: 'Someone in the back said "whoa" out loud.' },
+    { below: 280, line: "Recess got pushed back so everyone could look closer." },
+    { below: 450, line: "The class gave you a standing ovation." },
+    { below: Infinity, line: "The whole school wants a turn next week." },
+  ],
+  city: [
+    { below: 1, line: "You described the city lights in great detail. Someone clapped." },
+    { below: 50, line: 'Your teacher wrote "promising" on a sticky note.' },
+    { below: 120, line: "Even the class hamster looked impressed." },
+    { below: 250, line: "The principal came by to see what the fuss was about." },
+    { below: 400, line: "They're putting your photo on the hallway wall." },
+    { below: Infinity, line: "The local news wants an interview." },
+  ],
+};
 
-export function classReaction(score: number, night = 1): string {
-  const band = REACTIONS.find((r) => score < r.below) ?? REACTIONS[REACTIONS.length - 1]!;
-  return band.lines[(Math.max(1, night) - 1) % band.lines.length]!;
+export function classReaction(score: number, place: LocationId = "farm"): string {
+  const ranges = REACTIONS[place];
+  return (ranges.find((r) => score < r.below) ?? ranges[ranges.length - 1]!).line;
 }
+
+/** Every reaction line, for checking there are no repeats. */
+export const ALL_REACTIONS = Object.values(REACTIONS).flatMap((ranges) =>
+  ranges.map((r) => r.line),
+);

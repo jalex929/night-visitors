@@ -82,8 +82,11 @@ the city. They're kept well under the sound effects and follow the Sound button 
 rim lights. Now a shallow bowl hangs below the disc, the hatch is a flat oval at its lowest point
 (squashed to the same angle as the disc), and the beam comes out of it.
 
-**The class never says the same thing twice in a run** (Jay's call). Each score range has three
-reactions, one per night, so the farm, town and city mornings never repeat a line.
+**The class never says the same thing twice in a run** (Jay's call; thresholds proposed). Each
+place has its own score thresholds and its own six reactions (18 lines, none repeated), because
+nights get shorter and the things to catch change from place to place. The thresholds are first
+guesses (the city's are lowest, since its night is only 30 seconds) and live in
+`src/game/summary.ts` for tuning.
 
 **Saucer lights follow the rim** (Jay's call). They travel around the disc, bigger and brighter
 in front and dim at the back, so the saucer reads as round, not flat.

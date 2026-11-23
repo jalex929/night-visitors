@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { GROUND_Y, KINDS, STRENGTH_XP, beamHalfWidth, headStart, locationForNight } from "./config";
 import { newGame, spawn, step, type GameState, type Input } from "./game";
-import { classReaction, haulSentence } from "./summary";
+import { ALL_REACTIONS, classReaction, haulSentence } from "./summary";
 
 const idle: Input = { move: 0, targetX: null, beam: false };
 const beam: Input = { move: 0, targetX: null, beam: true };
@@ -270,10 +270,15 @@ describe("the morning", () => {
     expect(classReaction(50)).not.toBe(classReaction(2000));
   });
 
-  it("never repeats a reaction across the three nights of a run", () => {
-    for (const score of [0, 50, 200, 450, 800, 5000]) {
-      const lines = [1, 2, 3].map((night) => classReaction(score, night));
+  it("every place has its own thresholds and lines, and no line repeats", () => {
+    expect(new Set(ALL_REACTIONS).size).toBe(ALL_REACTIONS.length);
+    expect(ALL_REACTIONS.length).toBeGreaterThanOrEqual(18);
+    for (const score of [0, 40, 130, 260, 420, 900]) {
+      const lines = (["farm", "town", "city"] as const).map((p) => classReaction(score, p));
       expect(new Set(lines).size).toBe(3);
     }
+    // The city's shorter night reaches its top line sooner than the farm's.
+    expect(classReaction(450, "city")).toBe("The local news wants an interview.");
+    expect(classReaction(450, "farm")).toBe("Best show and tell in years.");
   });
 });
