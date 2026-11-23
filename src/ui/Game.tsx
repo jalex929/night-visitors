@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { KINDS, STRENGTH_XP, WORLD_H, clampWorldWidth, type Kind } from "../game/config";
 import { newGame, nextLevelXp, step, type GameState, type Input } from "../game/game";
 import { drawScene, type FloatText } from "../render/draw";
-import { play, setHum } from "./sound";
+import { play, setHum, startMusic, stopMusic } from "./sound";
 
 export interface NightResult {
   night: number;
@@ -120,6 +120,14 @@ export function Game({ night, headStart, duration, sound, onToggleSound, onEnd, 
   const onEndRef = useRef(onEnd);
   onEndRef.current = onEnd;
 
+  // Each place has its own quiet loop while the night is on.
+  const [over, setOver] = useState(false);
+  useEffect(() => {
+    if (sound && !paused && !over) startMusic(place.id);
+    else stopMusic();
+  }, [sound, paused, over, place.id]);
+  useEffect(() => () => stopMusic(), []);
+
   // The world gets wider or narrower with the window; things just walk into the new space.
   useEffect(() => {
     const s = stateRef.current!;
@@ -189,6 +197,7 @@ export function Game({ night, headStart, duration, sound, onToggleSound, onEnd, 
             setCaption("The sun's coming up. 15 seconds left.");
           } else if (ev.type === "over") {
             setHum(false);
+            setOver(true);
             setCaption("Morning. Time to go home.");
             if (!ended.current) {
               ended.current = true;

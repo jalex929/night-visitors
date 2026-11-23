@@ -33,6 +33,7 @@ export function setSoundOn(on: boolean) {
     if (a?.state === "suspended") void a.resume();
   } else {
     setHum(false);
+    stopMusic();
   }
 }
 
@@ -121,5 +122,384 @@ export function setHum(on: boolean) {
     h.gain.gain.setTargetAtTime(0.0001, a.currentTime, 0.04);
     h.osc.stop(a.currentTime + 0.2);
     h.wob.stop(a.currentTime + 0.2);
+  }
+}
+
+// Browsers keep audio asleep until a tap or key press. If sound was left on from an earlier
+// visit, wake it on the first one.
+if (typeof document !== "undefined") {
+  const wake = () => {
+    if (soundOn && ctx?.state === "suspended") void ctx.resume();
+  };
+  document.addEventListener("pointerdown", wake);
+  document.addEventListener("keydown", wake);
+}
+
+/* ---------------------------------------------------------------------------------------------
+ * Background music: a short loop per place, written as note lists and played by a small
+ * look-ahead scheduler. Kept quiet so the effects sit on top.
+ * ------------------------------------------------------------------------------------------- */
+
+export type Track = "farm" | "town" | "city";
+
+interface Voice {
+  /** MIDI note numbers per 8th-note step; null is a rest. */
+  notes: (number | null)[];
+  type: OscillatorType;
+  volume: number;
+  /** Note length in steps. */
+  length: number;
+}
+
+interface Song {
+  bpm: number;
+  voices: Voice[];
+  /** Soft hi-hat ticks on these 8th-note steps (city only). */
+  hats?: number[];
+}
+
+const _ = null;
+
+const SONGS: Record<Track, Song> = {
+  // Farm: an easy plucked tune in G major pentatonic over a root-fifth bass.
+  farm: {
+    bpm: 100,
+    voices: [
+      {
+        type: "triangle",
+        volume: 0.05,
+        length: 1,
+        notes: [
+          67,
+          _,
+          71,
+          _,
+          74,
+          _,
+          71,
+          69,
+          67,
+          _,
+          64,
+          _,
+          62,
+          _,
+          _,
+          _,
+          67,
+          _,
+          71,
+          _,
+          74,
+          76,
+          74,
+          _,
+          71,
+          _,
+          69,
+          _,
+          67,
+          _,
+          _,
+          _,
+        ],
+      },
+      {
+        type: "sine",
+        volume: 0.07,
+        length: 2,
+        notes: [
+          43,
+          _,
+          _,
+          _,
+          50,
+          _,
+          _,
+          _,
+          43,
+          _,
+          _,
+          _,
+          50,
+          _,
+          _,
+          _,
+          48,
+          _,
+          _,
+          _,
+          43,
+          _,
+          _,
+          _,
+          50,
+          _,
+          _,
+          _,
+          43,
+          _,
+          _,
+          _,
+        ],
+      },
+    ],
+  },
+  // Town: slow lo-fi chords (Fmaj7, Em7, Dm7, Cmaj7) with a sparse melody.
+  town: {
+    bpm: 76,
+    voices: [
+      // One soft voice per chord tone; each chord holds for a bar (8 steps).
+      ...[
+        [53, 52, 50, 48],
+        [57, 55, 53, 52],
+        [60, 59, 57, 55],
+        [64, 62, 60, 59],
+      ].map((tones) => ({
+        type: "sine" as OscillatorType,
+        volume: 0.025,
+        length: 7,
+        notes: tones.flatMap((n) => [n, _, _, _, _, _, _, _]),
+      })),
+      {
+        type: "triangle",
+        volume: 0.04,
+        length: 2,
+        notes: [
+          _,
+          _,
+          72,
+          _,
+          69,
+          _,
+          _,
+          _,
+          _,
+          _,
+          71,
+          _,
+          67,
+          _,
+          _,
+          _,
+          _,
+          _,
+          69,
+          _,
+          65,
+          _,
+          67,
+          _,
+          _,
+          _,
+          64,
+          _,
+          _,
+          _,
+          _,
+          _,
+        ],
+      },
+    ],
+  },
+  // City: a walking bass and late-night minor chords, with soft hi-hats.
+  city: {
+    bpm: 108,
+    voices: [
+      {
+        type: "triangle",
+        volume: 0.08,
+        length: 1,
+        notes: [
+          38,
+          _,
+          41,
+          _,
+          45,
+          _,
+          48,
+          _,
+          43,
+          _,
+          46,
+          _,
+          50,
+          _,
+          46,
+          _,
+          36,
+          _,
+          40,
+          _,
+          43,
+          _,
+          46,
+          _,
+          45,
+          _,
+          43,
+          _,
+          41,
+          _,
+          40,
+          _,
+        ],
+      },
+      {
+        type: "square",
+        volume: 0.012,
+        length: 1,
+        notes: [
+          _,
+          _,
+          _,
+          62,
+          _,
+          _,
+          65,
+          _,
+          _,
+          _,
+          _,
+          62,
+          _,
+          _,
+          65,
+          _,
+          _,
+          _,
+          _,
+          64,
+          _,
+          _,
+          67,
+          _,
+          _,
+          _,
+          _,
+          61,
+          _,
+          _,
+          64,
+          _,
+        ],
+      },
+      {
+        type: "sine",
+        volume: 0.045,
+        length: 3,
+        notes: [
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          74,
+          _,
+          _,
+          72,
+          _,
+          _,
+          69,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          _,
+          72,
+          _,
+          70,
+          _,
+          69,
+          _,
+          _,
+          _,
+        ],
+      },
+    ],
+    hats: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31],
+  },
+};
+
+let music: { track: Track; timer: number; step: number; next: number; bus: GainNode } | null = null;
+
+function midi(n: number): number {
+  return 440 * Math.pow(2, (n - 69) / 12);
+}
+
+function hat(a: AudioContext, bus: GainNode, t: number) {
+  const buffer = a.createBuffer(1, Math.floor(a.sampleRate * 0.03), a.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+  const src = a.createBufferSource();
+  src.buffer = buffer;
+  const filter = a.createBiquadFilter();
+  filter.type = "highpass";
+  filter.frequency.value = 7000;
+  const gain = a.createGain();
+  gain.gain.value = 0.025;
+  src.connect(filter).connect(gain).connect(bus);
+  src.start(t);
+}
+
+function schedule() {
+  const a = ctx;
+  if (!a || !music) return;
+  const song = SONGS[music.track];
+  const stepLength = 60 / song.bpm / 2;
+  while (music.next < a.currentTime + 0.25) {
+    const t = music.next;
+    for (const v of song.voices) {
+      const note = v.notes[music.step % v.notes.length];
+      if (note == null) continue;
+      const osc = a.createOscillator();
+      const gain = a.createGain();
+      osc.type = v.type;
+      osc.frequency.value = midi(note);
+      const end = t + stepLength * v.length;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(v.volume, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, end);
+      osc.connect(gain).connect(music.bus);
+      osc.start(t);
+      osc.stop(end + 0.05);
+    }
+    if (song.hats?.includes(music.step % 32)) hat(a, music.bus, t);
+    music.step++;
+    music.next += stepLength;
+  }
+}
+
+/** Starts (or switches to) a place's loop. Does nothing while sound is off. */
+export function startMusic(track: Track) {
+  if (!soundOn) return;
+  const a = audio();
+  if (!a || !master) return;
+  if (music?.track === track) return;
+  stopMusic();
+  const bus = a.createGain();
+  bus.gain.setValueAtTime(0.0001, a.currentTime);
+  bus.gain.exponentialRampToValueAtTime(1, a.currentTime + 1.2);
+  bus.connect(master);
+  music = { track, step: 0, next: a.currentTime + 0.1, bus, timer: 0 };
+  music.timer = window.setInterval(schedule, 60);
+  schedule();
+}
+
+export function stopMusic() {
+  if (!music) return;
+  const m = music;
+  music = null;
+  window.clearInterval(m.timer);
+  if (ctx) {
+    m.bus.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.15);
+    window.setTimeout(() => m.bus.disconnect(), 800);
   }
 }

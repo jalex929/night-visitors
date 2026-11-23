@@ -61,8 +61,16 @@ grow).
 
 **Characters** (Jay's calls): cows are girl cows (udders, no horns, no eyelashes); the jogger
 actually jogs; a slower walker was added (a pizza delivery person); city commuters vary in skin
-tone (five) and hair (short, bun, curls, ponytail); pigeons have beaks; raccoons kept their
+tone and hair (short, bun, curls, ponytail); pigeons have beaks; raccoons kept their
 original simple round shape with ears added, after a more detailed version looked scary.
+
+**People are diverse** (Jay's call). Seven skin tones are shared by everyone in the game. Farmers
+include women (a braid under the straw hat), and some commuters wear suits with a shirt and tie.
+
+**A quiet song for each place** (Jay's call; the tunes are build defaults). Short loops written
+as note lists and synthesized in the browser, so there are no audio files to license: a plucked
+pentatonic tune for the farm, slow lo-fi chords for town, and a walking bass with soft hi-hats for
+the city. They're kept well under the sound effects and follow the Sound button (off by default).
 
 **Saucer lights follow the rim** (Jay's call). They travel around the disc, bigger and brighter
 in front and dim at the back, so the saucer reads as round, not flat.

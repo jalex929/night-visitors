@@ -544,7 +544,13 @@ function jogger(ctx: CanvasRenderingContext2D, swing: number, look: PersonLook) 
   ctx.restore();
 }
 
-const SKIN_TONES = ["#f1c9a5", "#d9a074", "#a8693f", "#6e4127", "#4a2c1c"];
+/** Seven skin tones, shared by every person in the game. */
+const SKIN_TONES = ["#f6d5b8", "#e8b98f", "#d49a6a", "#b47a4c", "#8d5a36", "#6a4128", "#47291a"];
+
+/** Spreads people across the skin tones (entity ids are sequential, so mix them up). */
+function skinFor(variant: number): string {
+  return SKIN_TONES[(variant * 5 + 3) % SKIN_TONES.length]!;
+}
 const HAIR_COLORS = ["#1c1714", "#3b2618", "#6b4423", "#b5884e", "#8c8c94"];
 const COATS = ["#4c5470", "#6a4c6e", "#3f6158", "#7a5a3e"];
 
@@ -643,17 +649,30 @@ const PAINTERS: Record<Kind, Painter> = {
     ellipse(ctx, 17, -19.5, 1.1, 1.1);
     ctx.fill();
   },
-  farmer(ctx, swing) {
+  farmer(ctx, swing, variant) {
+    const skin = skinFor(variant);
+    const lady = variant % 2 === 0;
+    const shirt = ["#c95f4c", "#d9a03f", "#5f8f6a", "#8a6bb0"][Math.floor(variant / 2) % 4]!;
+    const hairColor = HAIR_COLORS[(variant * 3) % HAIR_COLORS.length]!;
+    // A braid down the back, drawn before the body.
+    if (lady) {
+      ctx.fillStyle = hairColor;
+      for (let i = 0; i < 4; i++) {
+        ellipse(ctx, -5.5 - i * 0.6, -38 + i * 4, 2.6, 2.4);
+        ctx.fill();
+      }
+    }
     ctx.strokeStyle = "#3d4d7a";
     ctx.lineWidth = 4;
     legs(ctx, [-3, 3], -16, 16, swing * 0.7);
+    // Overalls with a shirt underneath.
     ctx.fillStyle = "#4a5f96";
     rrect(ctx, -7, -32, 14, 18, 4);
     ctx.fill();
-    ctx.fillStyle = "#c95f4c";
+    ctx.fillStyle = shirt;
     rrect(ctx, -7, -32, 14, 7, 3);
     ctx.fill();
-    ctx.strokeStyle = "#c98f6a";
+    ctx.strokeStyle = skin;
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(-6, -29);
@@ -661,9 +680,15 @@ const PAINTERS: Record<Kind, Painter> = {
     ctx.moveTo(6, -29);
     ctx.lineTo(10, -20 + swing * 0.4);
     ctx.stroke();
-    ctx.fillStyle = "#c98f6a";
+    ctx.fillStyle = skin;
     ellipse(ctx, 0, -38, 6, 6);
     ctx.fill();
+    if (lady) {
+      // Hair framing the face under the hat brim.
+      ctx.fillStyle = hairColor;
+      ellipse(ctx, -3.5, -39, 3.4, 4.6);
+      ctx.fill();
+    }
     ctx.fillStyle = "#e3c06e";
     ellipse(ctx, 0, -42, 11, 2.6);
     ctx.fill();
@@ -899,8 +924,12 @@ const PAINTERS: Record<Kind, Painter> = {
     ctx.fillStyle = "#d9534f";
     ctx.fillRect(7, -21, 4, 3);
   },
-  jogger(ctx, swing) {
-    jogger(ctx, swing * 1.4, { shirt: "#e2735a", legs: "#2f3a58", skin: "#8a5a3c" });
+  jogger(ctx, swing, variant) {
+    jogger(ctx, swing * 1.4, {
+      shirt: ["#e2735a", "#4f9fd0", "#9ccf6b"][variant % 3]!,
+      legs: "#2f3a58",
+      skin: skinFor(variant),
+    });
     // Headband, drawn in the same lean as the runner.
     ctx.save();
     ctx.translate(0, -Math.abs(Math.max(-1, Math.min(1, (swing * 1.4) / 4))) * 3);
@@ -909,8 +938,8 @@ const PAINTERS: Record<Kind, Painter> = {
     ctx.fillRect(-4, -42, 12, 2.5);
     ctx.restore();
   },
-  pizza(ctx, swing) {
-    person(ctx, swing * 0.6, { shirt: "#d9534f", legs: "#3a3f55", skin: "#c98f6a" });
+  pizza(ctx, swing, variant) {
+    person(ctx, swing * 0.6, { shirt: "#d9534f", legs: "#3a3f55", skin: skinFor(variant) });
     // Cap and a pizza box held out in front.
     ctx.fillStyle = "#d9534f";
     ctx.beginPath();
@@ -1060,11 +1089,31 @@ const PAINTERS: Record<Kind, Painter> = {
     }
   },
   commuter(ctx, swing, variant) {
-    const skin = SKIN_TONES[variant % SKIN_TONES.length]!;
-    const coat = COATS[Math.floor(variant / 2) % COATS.length]!;
-    person(ctx, swing * 0.8, { shirt: coat, legs: "#2c3044", skin });
+    const skin = skinFor(variant);
+    const suit = variant % 2 === 1;
+    const coat = suit
+      ? ["#2b2f3f", "#3a3a44", "#2d3a52"][variant % 3]!
+      : COATS[Math.floor(variant / 2) % COATS.length]!;
+    person(ctx, swing * 0.8, { shirt: coat, legs: suit ? coat : "#2c3044", skin });
+    if (suit) {
+      // White shirt in a V, lapels and a tie.
+      ctx.fillStyle = "#eef0f4";
+      ctx.beginPath();
+      ctx.moveTo(-3, -33);
+      ctx.lineTo(3, -33);
+      ctx.lineTo(0, -25);
+      ctx.fill();
+      ctx.fillStyle = ["#c95f4c", "#d9a03f", "#4f9fd0"][Math.floor(variant / 2) % 3]!;
+      ctx.beginPath();
+      ctx.moveTo(-0.9, -32);
+      ctx.lineTo(0.9, -32);
+      ctx.lineTo(1.4, -25);
+      ctx.lineTo(0, -23.5);
+      ctx.lineTo(-1.4, -25);
+      ctx.fill();
+    }
     hair(ctx, Math.floor(variant / 3) % 4, HAIR_COLORS[(variant * 7) % HAIR_COLORS.length]!);
-    ctx.fillStyle = "#6e4a32";
+    ctx.fillStyle = suit ? "#3b2a1e" : "#6e4a32";
     rrect(ctx, 6, -22 + swing * 0.3, 10, 8, 2);
     ctx.fill();
   },

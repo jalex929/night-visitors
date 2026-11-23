@@ -27,7 +27,8 @@ bigger things are worth more but take longer to lift, and everything else runs w
 - Controls: arrow keys or A/D to move and Space to beam; a mouse (point to move, press to beam);
   or a finger (drag to move, hold the Beam button). P or Escape pauses, and leaving the tab
   pauses too.
-- Optional sound, synthesized in the browser with no audio files; off by default.
+- Optional sound and a quiet background song for each place, all synthesized in the browser
+  with no audio files; off by default.
 - Reduced motion: no star twinkle, rising rings, bobbing, chasing lights or wobble shake.
 
 All art is drawn in code from simple shapes. There are no image files and nothing borrowed
