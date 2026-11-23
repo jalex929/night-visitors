@@ -1,7 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { MIN_NIGHT, WORLD_H, clampWorldWidth, headStart, locationForNight } from "./game/config";
+import {
+  MIN_NIGHT,
+  NIGHTS,
+  WORLD_H,
+  clampWorldWidth,
+  headStart,
+  locationForNight,
+} from "./game/config";
 import { newGame, step } from "./game/game";
-import { classReaction, haulLines, haulSentence } from "./game/summary";
+import { classReaction, haulLines } from "./game/summary";
 import { drawScene } from "./render/draw";
 import { Game, reducedMotion, type NightResult } from "./ui/Game";
 import { setSoundOn } from "./ui/sound";
@@ -155,6 +162,7 @@ export function App() {
   const morning = screen.name === "morning";
   const played = morning ? locationForNight(screen.result.night) : null;
   const upNext = locationForNight(run.night);
+  const lastNight = morning && screen.result.night >= NIGHTS;
 
   return (
     <main className="app app-menu">
@@ -190,7 +198,7 @@ export function App() {
               heavier things. Things with a lock are too heavy for now.
             </li>
             <li>
-              <strong>Three places:</strong> the farm, then town, then the city. Each one starts
+              <strong>Three nights:</strong> the farm, then town, then the city. Each one starts
               your laser back at level 1, and nights get shorter, but the level you reach earns a
               head start on the next.
             </li>
@@ -203,39 +211,64 @@ export function App() {
           {best > 0 && <p className="best">Best night so far: {best} points</p>}
         </section>
       ) : (
-        <section className="panel" aria-labelledby="morning">
-          <p className="eyebrow">
-            Night {screen.result.night} · {played!.name} · Sunrise
-          </p>
-          <h1 id="morning" tabIndex={-1} ref={(el) => el?.focus()}>
-            Home by morning
-          </h1>
-          <p className="lede">
-            For show and tell, you brought <strong>{haulSentence(screen.result.collected)}</strong>.
-          </p>
-          <p className="score" data-testid="final-score">
-            {screen.result.score} <span>points</span>
-            {screen.best && <span className="badge">New best</span>}
-          </p>
-          <p className="reaction">{classReaction(screen.result.score)}</p>
-          {haulLines(screen.result.collected).length > 0 && (
-            <ul className="haul" aria-label="What you brought">
-              {haulLines(screen.result.collected).map((l) => (
-                <li key={l.kind}>{l.text}</li>
-              ))}
-            </ul>
-          )}
-          <p className="best">
-            You reached laser level {screen.result.level}
-            {run.headStart > 0
-              ? `, so the night in ${upNext.place} gets a ${run.headStart}-second head start`
-              : ""}
-            . Total so far: {run.total} points.
-          </p>
+        <section className="panel panel-morning" aria-labelledby="morning">
+          <header className="card-head">
+            <p className="eyebrow">
+              Night {screen.result.night} of {NIGHTS} · {played!.name} · Sunrise
+            </p>
+            <h1 id="morning" className="h1-small" tabIndex={-1} ref={(el) => el?.focus()}>
+              {lastNight ? "Last night, done" : "Home by morning"}
+            </h1>
+          </header>
+
+          <div className="result">
+            <p className="score" data-testid="final-score">
+              {screen.result.score} <span>points</span>
+              {screen.best && <span className="badge">New best</span>}
+            </p>
+            <p className="reaction">{classReaction(screen.result.score)}</p>
+          </div>
+
+          <div className="haul-block">
+            <h2 className="label">For show and tell</h2>
+            {haulLines(screen.result.collected).length > 0 ? (
+              <ul className="haul" aria-label="What you brought">
+                {haulLines(screen.result.collected).map((l) => (
+                  <li key={l.kind}>{l.text}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="lede">Nothing this time.</p>
+            )}
+          </div>
+
+          <div className="note">
+            {lastNight ? (
+              <p>That was all three nights.</p>
+            ) : (
+              <p>
+                Laser level {screen.result.level} reached
+                {run.headStart > 0
+                  ? `, so ${upNext.place} starts with a ${run.headStart}-second head start`
+                  : ""}
+                .
+              </p>
+            )}
+            <p className="total">
+              {lastNight ? "Your total" : "Total so far"}: <strong>{run.total} points</strong>
+            </p>
+          </div>
+
           <div className="actions">
-            <button type="button" className="primary" onClick={nextNight}>
-              Fly to {upNext.place}
-            </button>
+            {lastNight ? (
+              <button type="button" className="primary" onClick={startRun}>
+                Play again
+              </button>
+            ) : (
+              <button type="button" className="primary" onClick={nextNight}>
+                Fly to {upNext.place}
+              </button>
+            )}
             <button type="button" onClick={() => setScreen({ name: "title" })}>
               Back to start
             </button>

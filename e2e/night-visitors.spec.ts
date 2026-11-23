@@ -22,7 +22,7 @@ test("a short night goes from the title to the morning, then on to town", async 
   await page.screenshot({ path: `test-results/morning-${test.info().project.name}.png` });
   await page.getByRole("button", { name: "Fly to town" }).click();
   await expect(page.getByText("Sunrise in")).toBeVisible();
-  await expect(page.getByText("Night 2")).toBeVisible();
+  await expect(page.getByText("Night 2 of 3")).toBeVisible();
   await expect(page.getByRole("img", { name: /Town at night/ })).toBeVisible();
 });
 

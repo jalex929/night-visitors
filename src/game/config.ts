@@ -214,7 +214,10 @@ export const LOCATIONS: Location[] = [
   },
 ];
 
-/** Night 1 is the farm, 2 the town, 3 the city, then round again. */
+/** A run is three nights: the farm, the town, then the city. */
+export const NIGHTS = 3;
+
+/** Night 1 is the farm, 2 the town, 3 the city. */
 export function locationForNight(night: number): Location {
   return LOCATIONS[(Math.max(1, night) - 1) % LOCATIONS.length]!;
 }

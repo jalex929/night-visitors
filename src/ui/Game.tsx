@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { KINDS, STRENGTH_XP, WORLD_H, clampWorldWidth, type Kind } from "../game/config";
+import { KINDS, NIGHTS, STRENGTH_XP, WORLD_H, clampWorldWidth, type Kind } from "../game/config";
 import { newGame, nextLevelXp, step, type GameState, type Input } from "../game/game";
 import { drawScene, type FloatText } from "../render/draw";
 import { play, setHum, startMusic, stopMusic } from "./sound";
@@ -350,7 +350,9 @@ export function Game({ night, headStart, duration, sound, onToggleSound, onEnd, 
     <div className="game">
       <header className="hud" aria-label="Night status">
         <div className="hud-item">
-          <span className="hud-label">Night {night}</span>
+          <span className="hud-label">
+            Night {night} of {NIGHTS}
+          </span>
           <span className="hud-value">{place.name}</span>
         </div>
         <div className="hud-item">

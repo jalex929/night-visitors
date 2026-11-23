@@ -39,8 +39,14 @@ everywhere.
 lightens and the moon sets as time runs out, so no countdown needs explaining. At dawn you see
 what you brought for show and tell and how the class took it.
 
-**Three places in a row: farm, town, city** (Jay's call, from a proposal). Jay asked that
-"another night" go somewhere new.
+**Three nights, then done: farm, town, city** (Jay's call, from a proposal). Jay asked that
+"another night" go somewhere new, then decided a run is only the three. After the city, the card
+shows the run total and Play again instead of looping back to the farm.
+
+**A calmer morning card** (Jay asked for better spacing; layout proposed). The haul was listed
+twice (a sentence and chips), so only the chips stay, under a "For show and tell" label. Points
+and the class's reaction sit together; the laser level, head start and running total sit below
+a divider, with room before the buttons. The heading is smaller so it fits on one line.
 
 **Shorter nights, higher caps, and a head start you earn** (Jay's call; numbers proposed). Jay
 first asked for 60-second nights, and decided against catches adding time. Then Jay set the

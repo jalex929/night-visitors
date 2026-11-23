@@ -8,7 +8,8 @@ bigger things are worth more but take longer to lift, and everything else runs w
 
 ## What it does
 
-- **Three places, one after another:** the farm, then town, then the city (then round again).
+- **Three nights, one after another:** the farm, then town, then the city. After the city the
+  run ends with your total and Play again.
   Each place starts the laser back at level 1, caps it higher (3, 4, then 5) and gives you a
   shorter night (60, 45, then 30 seconds). The level you reached earns a head start on the next
   night: 5 seconds for each level above 1.
@@ -22,8 +23,9 @@ bigger things are worth more but take longer to lift, and everything else runs w
   screen a moment after the level-up, with a "New!" tag and an announcement.
 - **Sunrise is the timer.** The sky slowly lightens and the moon sets. A warning appears 10
   seconds before dawn.
-- **The morning screen** lists what you brought for show and tell ("3 chickens, 1 very confused
-  cow and 1 picnic table") and how the class took it.
+- **The morning card** shows the night's points and how the class took it, what you brought
+  for show and tell, then the laser level reached, the head start it earned and the running
+  total.
 - Controls: arrow keys or A/D to move and Space to beam; a mouse (point to move, press to beam);
   or a finger (drag to move, hold the Beam button). P or Escape pauses, and leaving the tab
   pauses too.
@@ -60,7 +62,8 @@ npm run check      # types, lint, format, unit tests, build
 npm run test:e2e   # Playwright, desktop Chrome + Pixel 7 (run npm run build first)
 ```
 
-`?night=20` makes every night 20 seconds long (never under 15), which is handy for testing.
+`node e2e/shots.mjs` screenshots the morning card on desktop and phone from the dev server
+(`--last` for the final night). `?night=20` makes every night 20 seconds long (never under 15), which is handy for testing.
 In development, `window.__nv.state` exposes the live game state.
 
 ## Tested
